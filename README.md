@@ -29,7 +29,9 @@ There you need to set a series os parameters, such as cosmological parameters, d
 ## A dark matter catalog
 If computing the dark matter power spectrum, or void-matter bias, or halo-matter bias:
 
-format: ASCII file with 3 columns: x, y and z for the dark matter positions (all in Mpc/h)
+format: ASCII file with 3 columns: x, y and z for the dark matter positions (all in Mpc/h) without RSD
+
+or ASCII file with 6 columns: x, y, z, Vx, Vy, Vz with velocities in km/s if including RSD
 
 
 ## A void catalog
