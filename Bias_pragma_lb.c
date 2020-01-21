@@ -1,4 +1,4 @@
-//you can choose to compute:
+//you can choose to compute in parameters file:
 //matter power spectrum
 //halo-matter linear bias
 //void-matter linear bias
@@ -50,14 +50,6 @@
 using namespace std;
 
 const int puntual=1;                   //    1 -> tracer: center of the halo or void, 0 -> tracer: particles belonging to halo or void
-
-//  what you want to compute
-const int distorcion=0;                //    considering redshift soace distortions
-const int espectro_matter=1;           //    computes dark matter power spectrum
-const int bias_halos=0;                //    computes halo-matter linear bias
-const int bias_voids=0;                //    computes void-matter linear bias
-const int espectro_voids=0;            //    computes voids power spectrum
-const int espectro_halos=0;            //    computes halos power spectrum
 
 const int solo_analiza_bias_voids=0;   
 const int bin_lineal=1;                //    1 -> linear bins in k for computing linear bias, 0 -> logaritmic bins in k
@@ -151,10 +143,10 @@ double corte,pendiente,segunda,scorte;
 
 
 
-fftw_complex *delta;		//      potencial gravitacional
-fftw_complex *deltab;		//      potencial gravitacional
-fftw_complex *deltac;		//      potencial gravitacional
-fftw_plan dft,dftb,dftc;	//      plan principal
+fftw_complex *delta;		//      gravitational potencial
+fftw_complex *deltab;		//      gravitational potencial
+fftw_complex *deltac;		//      gravitational potencial
+fftw_plan dft,dftb,dftc;	//      fftw plans
 
 
 
@@ -165,7 +157,7 @@ fftw_plan dft,dftb,dftc;	//      plan principal
 
 
 
-
+// for substracting the CIC effect in small scales
 inline double kernel(double k){
   double aux=k*Lbox*0.5/nc;
   return pow(Lbox,3.)*pow(aux/sin(aux),4.);
@@ -469,7 +461,7 @@ void allocard(){
 
 
 void max_min_c(const char *NomArch){
-  printf("busca maximo y minimo halos...\n");
+  printf("searching max and min mass for haloes...\n");
   fflush(stdout);
   float a1, a2, a3, a4, a5;
   int i;
@@ -490,7 +482,7 @@ void max_min_c(const char *NomArch){
   }
   fclose(IN);
 
-  printf("número de halos = %d\n",NumHalos);
+  printf("number of haloes = %d\n",NumHalos);
   fflush(stdout);
 
   printf("cmax=%lf cmin=%lf para este caso\n",cmax,cmin);fflush(stdout);
@@ -498,7 +490,7 @@ void max_min_c(const char *NomArch){
   cmax=masa_max_todos;
   cmin=masa_min_todos;
 
-  printf("cmax=%lf cmin=%lf globales escogidos a mano, y usados de aqui en adelante\n",cmax,cmin);fflush(stdout);
+  printf("cmax=%lf cmin=%lf setted in the parameters file, and used from here on\n",cmax,cmin);fflush(stdout);
 
 
 //  cmin*=0.99;
@@ -547,7 +539,7 @@ void max_min_c(const char *NomArch){
   }
 
   printf("carga_max=%f, carga_min=%f\n",cmax,cmin);
-  printf("busca maximo y minimo...echo\n");
+  printf("searching max and min mass for haloes...done\n");
   fflush(stdout);
 }
 
@@ -569,7 +561,7 @@ void max_min_c(const char *NomArch){
 
 
 void max_min_cv(const char *NomArch){
-  printf("busca maximo y minimo voids...\n");
+  printf("searching max and min radious for voids...\n");
   fflush(stdout);
   float a1, a2, a3, a4;
   int i;
@@ -594,7 +586,7 @@ void max_min_cv(const char *NomArch){
   cmax=radio_max_todos;
   cmin=radio_min_todos;
 
-  printf("cmax=%lf cmin=%lf globales escogidos a mano, y usados de aqui en adelante\n",cmax,cmin);fflush(stdout);
+  printf("cmax=%lf cmin=%lf setted in the parameters file, and used from here on\n",cmax,cmin);fflush(stdout);
 
 //  cmin*=0.99;
 //  cmax*=1.01;
@@ -651,7 +643,7 @@ void max_min_cv(const char *NomArch){
   }
 
   printf("carga_max=%f, carga_min=%f\n",cmax,cmin);
-  printf("busca maximo y minimo...echo\n");
+  printf("searching max and min radious for voids...done\n");
   fflush(stdout);
 }
 
@@ -671,7 +663,7 @@ void max_min_cv(const char *NomArch){
 
 
 void densidad(const char *NomArch, double dr, int cuantos){
-  printf("calcula la densidad...\n");
+  printf("computing density...\n");
   fflush(stdout);
   float a0, a1, a2, a3, a4, a5, a6;
   float dx, dy, dz, tx, ty, tz;
@@ -754,7 +746,7 @@ void densidad(const char *NomArch, double dr, int cuantos){
   for(i=0;i<NumCel;i++)
     rho[i]/=n;
 
-  printf("calcula la densidad...echo\n");
+  printf("computing density...done\n");
   fflush(stdout);
 }
 
@@ -770,7 +762,7 @@ void densidad(const char *NomArch, double dr, int cuantos){
 
 
 void densidad_halos(const char *NomArch, double dr){
-  printf("calcula la densidad...\n");
+  printf("computing density of haloes...\n");
   fflush(stdout);
   float a0, a1, a2, a3, a4, a5, a6;
   float dx, dy, dz, tx, ty, tz;
@@ -805,7 +797,7 @@ void densidad_halos(const char *NomArch, double dr){
   for(i=0;i<NumCel;i++)//loop sobre las celdas para borrar la densidad antigua
     rho[i]/=NumHalos;
 
-  printf("calcula la densidad...echo\n");
+  printf("computing density of haloes...done\n");
   fflush(stdout);
 }
 
@@ -828,7 +820,7 @@ void densidad_halos(const char *NomArch, double dr){
 
 
 void densidad_voids(const char *NomArch, double dr){
-  printf("calcula la densidad...\n");
+  printf("computing density for voids...\n");
   fflush(stdout);
   float a0, a1, a2, a3, a4, a5, a6;
   double dx, dy, dz, tx, ty, tz;
@@ -932,7 +924,7 @@ void densidad_voids(const char *NomArch, double dr){
   for(i=0;i<NumCel;i++)	//	loop sobre las celdas para nomalizar la densidad
     rho[i]/=NumVoids;
 
-  printf("calcula la densidad...echo\n");
+  printf("computing density for voids...done\n");
   fflush(stdout);
 }
 
@@ -946,7 +938,7 @@ void densidad_voids(const char *NomArch, double dr){
 
 
 void densidad_bias(const char *NomArch, int nbin, double dr, int cuantos){
-printf("calcula la densidad para el bin %d del bias...\n",nbin);
+printf("computing density for bin %d of voids...\n",nbin);
 fflush(stdout);
   float a0, a1, a2, a3, a4, a5, a6;
   float dx, dy, dz, tx, ty, tz;
@@ -1015,7 +1007,7 @@ fflush(stdout);
   for(i=0;i<NumCel;i++)//loop sobre las celdas para borrar la densidad antigua
     rho[i]/=n;		//	ahora si es rho/delta rho
 
-printf("calcula la densidad para el bin %d del bias...echo\n",nbin);
+printf("computing density for bin %d of voids...done\n",nbin);
 fflush(stdout);
 }
 
@@ -1041,7 +1033,7 @@ fflush(stdout);
 
 
 void densidad_bias_halos(const char *NomArch, int nbin, double dr){
-printf("calcula la densidad para el bin %d del bias...\n",nbin);
+printf("computing density for bin %d of haloes...\n",nbin);
 fflush(stdout);
   float a0, a1, a2, a3, a4, a5, a6;
   float dx, dy, dz, tx, ty, tz;
@@ -1087,7 +1079,7 @@ fflush(stdout);
   for(i=0;i<NumCel;i++)//loop sobre las celdas para borrar la densidad antigua
     rho[i]/=cantidad[nbin];		//	ahora si es rho/delta rho
 
-printf("calcula la densidad para el bin %d del bias...echo\n",nbin);
+printf("computing density for bin %d of haloes...done\n",nbin);
 fflush(stdout);
 }
 
@@ -1116,7 +1108,7 @@ fflush(stdout);
 
 
 void densidad_bias_voids(const char *NomArch, int nbin, double dr){
-  printf("calcula la densidad...\n");
+  printf("computing voids density...\n");
   fflush(stdout);
   float a0, a1, a2, a3, a4, a5, a6;
   double dx, dy, dz, tx, ty, tz;
@@ -1234,7 +1226,7 @@ void densidad_bias_voids(const char *NomArch, int nbin, double dr){
   for(i=0;i<NumCel;i++)	//	loop sobre las celdas para nomalizar la densidad
     rho[i]/=cantidad[nbin];
 
-  printf("calcula la densidad...echo\n");
+  printf("computing voids density...done\n");
   fflush(stdout);
 }
 
@@ -1349,7 +1341,7 @@ void densidad_distorcion(const char *NomArch,int eje){
 
 
 void media(const char *NomArch){
-  printf("calcula la media del espectro...\n");
+  printf("mean of the spectrum...\n");
   fflush(stdout);
   int i,j,k,ijk,j2,k2;
   double elk;
@@ -1477,7 +1469,7 @@ void media(const char *NomArch){
     fprintf(ES,"%le %le %le %le\n",Mk[i],MP[i],Ek[i],EP[i]);
   }
   fclose(ES);
-  printf("calcula la media del espectro...echo\n");
+  printf("mean of the spectrum...done\n");
   fflush(stdout);
 }
 
@@ -1500,7 +1492,7 @@ void media(const char *NomArch){
 
 
 void media_bias(const char *NomArch,int nbin){
-  printf("calcula el bias para el bin %d...\n",nbin);
+  printf("computing bias for bin %d...\n",nbin);
   fflush(stdout);
   int i,j,k,ijk,j2,k2;
   double elk;
@@ -1523,7 +1515,7 @@ void media_bias(const char *NomArch,int nbin){
   }
   }	//	pragma
 
-  printf("ya junto las dos muestras, ahora va a repartir entre los bines\n");
+  printf("mean of the two samples done, splitting into k bins\n");
   fflush(stdout);
 
   //////////////////////		borro la información antigua
@@ -1598,7 +1590,7 @@ void media_bias(const char *NomArch,int nbin){
   }
   }	//	pragma
 
-  printf("ahora va a calcular la dispersion\n");
+  printf("variance into the k bins\n");
   fflush(stdout);
 
   //////////////////////		divido entre cont para obtener la média
@@ -1698,7 +1690,7 @@ void media_bias(const char *NomArch,int nbin){
 
 
 
-  printf("ahora imprime las medidas\n");
+  printf("printing files\n");
   fflush(stdout);
 
   //////////////////////		imprimo medidas
@@ -1752,7 +1744,7 @@ void media_bias(const char *NomArch,int nbin){
 
 
 
-  printf("ahora va a calcular e imprimir el bias\n");
+  printf("printing bias\n");
   fflush(stdout);
 
   ////////////////////			calculando el bias lineal
@@ -1793,7 +1785,7 @@ void media_bias(const char *NomArch,int nbin){
   fclose(CA);
   Spline_interp camb(Kcamb,Pcamb);
 
-  printf("antes de interpolar\n");  fflush(stdout);
+  printf("after interpolation\n");  fflush(stdout);
 
   //	imprime ajuste
   FILE *BI;
@@ -1806,7 +1798,6 @@ void media_bias(const char *NomArch,int nbin){
 
   fprintf(BI,"%f %f ",carga[nbin],Ecarga[nbin]);
 
-  printf("antes de interpolar\n");  fflush(stdout);
 
   for(b=0;b<i;b++){
     K[b]=Mk[b+j];
@@ -1815,13 +1806,13 @@ void media_bias(const char *NomArch,int nbin){
     S[b]=B[b]*sqrt(pow(EPb[b+j]/MPb[b+j],2.)+pow(EP[b+j]/MP[b+j],2.));
     V[b]=kernel(K[b])*MPb[b+j]/camb.interp(K[b]);
     Z[b]=kernel(K[b])*EPb[b+j]/camb.interp(K[b]);}
-  printf("antes de interpolar\n");  fflush(stdout);
+
   Fitab linea1(K2,B,S);
   fprintf(BI,"%e %e ",linea1.a,linea1.siga);
-  printf("antes de interpolar\n");  fflush(stdout);
+
   Fitab linea2(K2,V,Z);
   fprintf(BI,"%e %e ",linea2.a,linea2.siga);
-  printf("segundo bias\n");  fflush(stdout);
+
 
 /*  for(b=0;b<i;b++){
     B[b]=MPb6[b+j]/MP2[b+j];	//	<sqrt(dv*dv)>   /  <sqrt(dm*dm)>
@@ -1861,7 +1852,7 @@ void media_bias(const char *NomArch,int nbin){
 
 
 
-  printf("ahora imprime los ajustes\n");
+  printf("printing files now\n");
   fflush(stdout);
 
   //////////////////////		imprimo ajuste
@@ -1881,7 +1872,7 @@ void media_bias(const char *NomArch,int nbin){
   }
   fclose(ES);
 
-  printf("calcula el bias...echo\n");
+  printf("bias computation...done\n");
   fflush(stdout);
 }
 
@@ -2041,7 +2032,7 @@ segunda=mean[2];
 
 //	solo calcula el bias dados los espectros
 void calcula_bias(const char *NomArch,int nbin){
-  printf("calcula el bias para el bin %d...\n",nbin);
+  printf("computing bias for bin %d...\n",nbin);
   fflush(stdout);
 
   double bias,ebias;
@@ -2151,7 +2142,7 @@ void calcula_bias(const char *NomArch,int nbin){
   }
   fclose(ES);
 
-  printf("calcula el bias...echo\n");
+  printf("computing bias...done\n");
   fflush(stdout);
 }
 
@@ -2173,7 +2164,7 @@ int main(int argc, char **argv){
 
 ////////////////////////////            FFTW en paralelo
 int fftw_init_threads (void);
-printf("0 debe ser direfrente de %d\n",fftw_init_threads ());
+printf("0 has to be different from %d for FFTW\n",fftw_init_threads ());
 void fftw_plan_with_nthreads (int nthreads);
 fftw_plan_with_nthreads (nt);
 // -lfftw3_threads -lfftw3 -lm -lpthread
@@ -2189,7 +2180,7 @@ omp_set_num_threads(nt);
   if((espectro_matter==1)&&(solo_analiza_bias_voids==0)){
     int lado_caja=(int)Lbox;
     sprintf(ArchEn,"%s",file_matter);
-    sprintf(ArchSa,"P_z0_dark_matter.dat");
+    sprintf(ArchSa,"P_dark_matter.dat");
 
     if(distorcion==0){
       densidad(ArchEn,0.,3);
