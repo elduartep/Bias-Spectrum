@@ -40,7 +40,7 @@ format: ASCII file with 4 columns x, y, z, r for the voids positions an radious 
 ## A matter catalog
 If computing the halo-matter linear bias
 
-format: ASCII file with 5 columns x, y, a, m, r
+format: ASCII file with 5 columns x, y, z, m, r
 
 where x, y, z and  r are the haloes positions an radious in Mpc/h, while m is the halo mass in 10^{10} M_/sun units
 
