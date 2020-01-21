@@ -24,7 +24,7 @@ parametros.h
 There you need to set a series os parameters, such as cosmological parameters, details of the catalogs, path and name to the cataloges, the radious or mass intervals to consider when estimating the linear bias, and finally what you want to compute (spectrum, bias, etc).
 
 
-# imput
+# INPUTS
 
 ## A dark matter catalog
 If computing the dark matter power spectrum, or void-matter bias, or halo-matter bias:
@@ -43,5 +43,24 @@ If computing the halo-matter linear bias
 format: ASCII file with 5 columns x, y, a, m, r
 
 where x, y, z and  r are the haloes positions an radious in Mpc/h, while m is the halo mass in 10^{10} M_/sun units
+
+# OUTPUTS
+
+## P_dark_matter.dat
+matter power spectrum
+
+## bias_halo_matter.dat
+halo-matter linear bias
+
+
+## bias_void_matter.dat
+void-matter linear bias
+
+
+## Ph.dat
+halo power spectrum
+
+## Pv.dat
+void-power spectrum
 
 
