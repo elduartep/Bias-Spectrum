@@ -1,7 +1,7 @@
 # Bias-Spectrum
 Power spectrum and linear bias estimator
 
-# You need to install 
+# You need to install first
 FFTW3
 
 openmp
@@ -9,12 +9,19 @@ openmp
 
 # Main Program
 Bias_pragma_lb.c
+
+You can compile it by typing: g++ Bias_pragma_lb.c -lfftw3_omp -lfftw3 -lm -fopenmp
+
+You need to compile it every time you change the parameters file
+
 ## description
 
-# parameters file
+It estimates the matter power spectrum, the void-matter linear bias, or the halo-matter linear bias.
+
+# Parameters file
 parametros.h
 
-you need to set a series os parameters, such as cosmological parameters, details of the catalogs, path and name to the files...
+There you need to set a series os parameters, such as cosmological parameters, details of the catalogs, path and name to the cataloges, the radious or mass intervals to consider when estimating the linear bias, and finally what you want to compute (spectrum, bias, etc).
 
 
 # imput
