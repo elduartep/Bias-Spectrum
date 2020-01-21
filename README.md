@@ -1,7 +1,7 @@
 # Bias-Spectrum
 Power spectrum and linear bias estimator
 
-# You need to install first
+# First You need to install
 FFTW3
 
 openmp
